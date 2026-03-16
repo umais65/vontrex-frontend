@@ -1,0 +1,264 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { useCurrency } from '../context/CurrencyContext';
+import axios from 'axios';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+
+const CheckoutPage = () => {
+    const navigate = useNavigate();
+    const { cartItems, getCartTotal, clearCart } = useCart();
+    const { userInfo } = useAuth();
+    const { formatPrice, getRawConverted } = useCurrency();
+
+    // Required States
+    const [address, setAddress] = useState('');
+    const [city, setCity] = useState('');
+    const [postalCode, setPostalCode] = useState('');
+    const [country, setCountry] = useState('');
+    const [whatsapp, setWhatsapp] = useState('');
+    const [paymentMethod, setPaymentMethod] = useState('Credit Card');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const errorRef = useRef(null);
+
+    // Order Totals Calculation
+    const itemsPrice = getCartTotal();
+    const shippingPrice = itemsPrice > 100 ? 0 : 9.99;
+    const taxPrice = parseFloat((0.08 * itemsPrice).toFixed(2));
+    const totalPrice = parseFloat((itemsPrice + shippingPrice + taxPrice).toFixed(2));
+
+    useEffect(() => {
+        if (!userInfo) {
+            navigate('/login?redirect=checkout');
+        } else if (cartItems.length === 0) {
+            navigate('/cart');
+        }
+    }, [userInfo, navigate, cartItems]);
+
+    useEffect(() => {
+        if (error && errorRef.current) {
+            errorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, [error]);
+
+    const placeOrderHandler = async (e) => {
+        e.preventDefault();
+
+        // Validate WhatsApp BEFORE loading starts
+        if (!whatsapp || whatsapp.length < 10) {
+            setError('Please provide a valid WhatsApp number with country code');
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            const orderData = {
+                orderItems: cartItems.map(item => ({
+                    product: item.id,
+                    name: item.name,
+                    image: item.image,
+                    price: item.price,
+                    qty: item.quantity,
+                    size: item.size,
+                    color: item.color
+                })),
+                shippingAddress: { address, city, postalCode, country, whatsapp },
+                paymentMethod,
+                itemsPrice,
+                shippingPrice,
+                taxPrice,
+                totalPrice
+            };
+
+            const { data } = await axios.post('/api/orders', orderData, config);
+
+            // Clean Cart
+            clearCart();
+
+            if (data.emailPreviewUrl) {
+                alert(`✅ Order Placed Successfully!\n\nReceipt Link: ${data.emailPreviewUrl}\n\nClick OK to view your order details.`);
+            }
+
+            // Redirect to Order Detail
+            navigate(`/order/${data._id}`);
+        } catch (err) {
+            setError(err.response && err.response.data.message ? err.response.data.message : err.message);
+            setLoading(false);
+        }
+    };
+
+    return (
+        <main className="container section" style={{ padding: '120px 5% 80px' }}>
+            <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+                <h1 style={{ marginBottom: '2rem', textAlign: 'center' }}>Secure Checkout</h1>
+
+                {error && (
+                    <div ref={errorRef} style={{ backgroundColor: 'rgba(220, 53, 69, 0.1)', border: '1px solid var(--accent-red)', color: 'var(--accent-red)', padding: '1rem', borderRadius: '8px', marginBottom: '2rem' }}>
+                        {error}
+                    </div>
+                )}
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '3rem' }}>
+
+                    {/* CHECKOUT FORM */}
+                    <div>
+                        <form onSubmit={placeOrderHandler}>
+
+                            {/* SHIPPING INFO */}
+                            <div style={{ background: 'var(--secondary-bg)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-color)', marginBottom: '2rem' }}>
+                                <h2 style={{ marginBottom: '1.5rem' }}>Shipping Information</h2>
+
+                                <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+                                    <label className="form-label" style={{ display: 'block', marginBottom: '0.5rem' }}>Full Name *</label>
+                                    <input type="text" className="form-input" style={{ width: '100%' }} value={userInfo ? userInfo.name : ''} readOnly />
+                                </div>
+
+                                <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+                                    <label className="form-label" style={{ display: 'block', marginBottom: '0.5rem' }}>Address *</label>
+                                    <input type="text" className="form-input" style={{ width: '100%' }} required value={address} onChange={(e) => setAddress(e.target.value)} />
+                                </div>
+
+                                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+                                    <div className="form-group">
+                                        <label className="form-label" style={{ display: 'block', marginBottom: '0.5rem' }}>City *</label>
+                                        <input type="text" className="form-input" style={{ width: '100%' }} required value={city} onChange={(e) => setCity(e.target.value)} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label" style={{ display: 'block', marginBottom: '0.5rem' }}>Postal Code *</label>
+                                        <input type="text" className="form-input" style={{ width: '100%' }} required value={postalCode} onChange={(e) => setPostalCode(e.target.value)} />
+                                    </div>
+                                </div>
+
+                                <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+                                    <label className="form-label" style={{ display: 'block', marginBottom: '0.5rem' }}>Country *</label>
+                                    <input type="text" className="form-input" style={{ width: '100%' }} required value={country} onChange={(e) => setCountry(e.target.value)} />
+                                </div>
+
+                                <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+                                    <label className="form-label" style={{ display: 'block', marginBottom: '0.5rem' }}>WhatsApp Number *</label>
+                                    <PhoneInput
+                                        country={'us'}
+                                        value={whatsapp}
+                                        onChange={phone => setWhatsapp(phone)}
+                                        inputStyle={{ 
+                                            width: '100%', 
+                                            height: '45px', 
+                                            fontSize: '1rem', 
+                                            borderRadius: '8px', 
+                                            border: '1px solid var(--border-color)', 
+                                            background: 'var(--input-bg)', 
+                                            color: 'var(--text-primary)' 
+                                        }}
+                                        buttonStyle={{ 
+                                            borderRadius: '8px 0 0 8px', 
+                                            border: '1px solid var(--border-color)', 
+                                            background: 'var(--secondary-bg)' 
+                                        }}
+                                        dropdownStyle={{ 
+                                            background: 'var(--secondary-bg)', 
+                                            color: 'var(--text-primary)' 
+                                        }}
+                                        containerStyle={{
+                                            width: '100%'
+                                        }}
+                                        enableSearch={true}
+                                        disableSearchIcon={true}
+                                        searchPlaceholder="Search country..."
+                                    />
+                                </div>
+                            </div>
+
+                            {/* PAYMENT METHOD */}
+                            <div style={{ background: 'var(--secondary-bg)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-color)', marginBottom: '2rem' }}>
+                                <h2 style={{ marginBottom: '1.5rem' }}>Payment Method</h2>
+
+                                <div className="form-group" style={{ marginBottom: '1rem' }}>
+                                    <input type="radio" id="credit" name="paymentMethod" value="Credit Card" checked={paymentMethod === 'Credit Card'} onChange={(e) => setPaymentMethod(e.target.value)} />
+                                    <label htmlFor="credit" style={{ marginLeft: '0.5rem' }}>Credit Card (Demo)</label>
+                                </div>
+                                <div className="form-group">
+                                    <input type="radio" id="paypal" name="paymentMethod" value="PayPal" checked={paymentMethod === 'PayPal'} onChange={(e) => setPaymentMethod(e.target.value)} />
+                                    <label htmlFor="paypal" style={{ marginLeft: '0.5rem' }}>PayPal (Demo)</label>
+                                </div>
+
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '1.5rem' }}>
+                                    🔒 This is a secure demo checkout. No actual payment processing occurs.
+                                </p>
+                            </div>
+
+                            <button type="submit" className="btn btn-primary btn-lg" style={{ width: '100%' }} disabled={loading}>
+                                {loading ? 'Processing...' : 'Complete Order'}
+                            </button>
+                        </form>
+                    </div>
+
+                    {/* ORDER SUMMARY */}
+                    <div style={{ height: 'fit-content', position: 'sticky', top: '100px' }}>
+                        <div style={{ background: 'var(--secondary-bg)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+                            <h3 style={{ marginBottom: '1.5rem' }}>Order Summary</h3>
+
+                            <div style={{ marginBottom: '1.5rem', maxHeight: '300px', overflowY: 'auto' }}>
+                                {cartItems.map((item, index) => (
+                                    <div key={index} style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-color)' }}>
+                                        <img src={item.image} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px' }} />
+                                        <div style={{ flex: 1 }}>
+                                            <h4 style={{ fontSize: '0.875rem', marginBottom: '0.25rem' }}>{item.name}</h4>
+                                            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{item.size && `${item.size} `} {item.color && `| ${item.color.name}`}</p>
+                                            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Qty: {item.quantity}</p>
+                                        </div>
+                                        <div style={{ fontWeight: 700, color: 'var(--accent-red)' }}>
+                                            {formatPrice(item.price * item.quantity)}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', color: 'var(--text-secondary)' }}>
+                                    <span>Subtotal</span>
+                                    <span>{formatPrice(itemsPrice)}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', color: 'var(--text-secondary)' }}>
+                                    <span>Shipping</span>
+                                    <span>{shippingPrice === 0 ? 'FREE' : formatPrice(shippingPrice)}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', color: 'var(--text-secondary)' }}>
+                                    <span>Tax (Est.)</span>
+                                    <span>{formatPrice(taxPrice)}</span>
+                                </div>
+                                <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1rem', marginTop: '1rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <span style={{ fontSize: '1.25rem', fontWeight: 700 }}>Total</span>
+                                        <span style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--accent-red)' }}>{formatPrice(totalPrice)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <style>{`
+                @media (max-width: 1024px) {
+                    div[style*="grid-template-columns: 1.5fr 1fr"] {
+                        grid-template-columns: 1fr !important;
+                    }
+                    div[style*="position: sticky"] {
+                        position: static !important;
+                    }
+                }
+            `}</style>
+        </main>
+    );
+};
+
+export default CheckoutPage;

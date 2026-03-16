@@ -1,0 +1,92 @@
+/* Cleared Vite default styles to allow our custom CSS to control the layout */
+
+/* ADMIN DASHBOARD LAYOUT */
+.admin-dashboard {
+  display: flex;
+  min-height: calc(100vh - 80px);
+  /* Adjust based on navbar height */
+  background-color: var(--primary-bg);
+  padding-top: 80px;
+  /* Offset for fixed navbar */
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+.admin-sidebar {
+  width: 280px;
+  background-color: var(--secondary-bg);
+  border-right: 1px solid var(--border-color);
+  padding: 2rem 1rem;
+  flex-shrink: 0;
+  height: calc(100vh - 80px);
+  position: sticky;
+  top: 80px;
+  overflow-y: auto;
+}
+
+.admin-sidebar__header {
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.admin-sidebar__header h2 {
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.admin-sidebar__nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-sidebar__nav li {
+  margin-bottom: 0.5rem;
+}
+
+.admin-nav-link {
+  display: block;
+  padding: 0.8rem 1rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.admin-nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.admin-nav-link--active {
+  background-color: var(--accent-red);
+  color: #fff;
+}
+
+.admin-nav-link--active:hover {
+  background-color: #ff4a4a;
+  color: #fff;
+}
+
+.admin-content {
+  flex-grow: 1;
+  padding: 2.5rem;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .admin-dashboard {
+    flex-direction: column;
+  }
+
+  .admin-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+}
