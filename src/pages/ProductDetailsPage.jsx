@@ -5,6 +5,7 @@ import { useCurrency } from '../context/CurrencyContext';
 import { useWishlist } from '../context/WishlistContext';
 import CurrencySelector from '../components/CurrencySelector';
 import ReactMarkdown from 'react-markdown';
+import axios from 'axios';
 
 const ProductDetailsPage = () => {
     const { id } = useParams();
@@ -42,11 +43,7 @@ const ProductDetailsPage = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const res = await fetch(`/api/products/${id}`);
-                if (!res.ok) {
-                    throw new Error('Product not found');
-                }
-                const data = await res.json();
+                const { data } = await axios.get(`/api/products/${id}`);
                 setProduct(data);
 
                 // Initialize default selections
@@ -56,7 +53,7 @@ const ProductDetailsPage = () => {
 
                 setLoading(false);
             } catch (err) {
-                setError(err.message);
+                setError(err.response?.data?.message || err.message);
                 setLoading(false);
             }
         };

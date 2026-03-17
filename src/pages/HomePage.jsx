@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import HeroSection from '../components/HeroSection';
 import ProductCard from '../components/ProductCard';
 import CurrencySelector from '../components/CurrencySelector';
+import axios from 'axios';
 
 const HomePage = () => {
     const [featured, setFeatured] = useState([]);
@@ -11,8 +12,7 @@ const HomePage = () => {
         const fetchFeatured = async () => {
             try {
                 // Fetch featured products
-                const res = await fetch('/api/products/featured');
-                const data = await res.json();
+                const { data } = await axios.get('/api/products/featured');
                 setFeatured(data);
             } catch (err) {
                 console.error("Failed to fetch featured products", err);

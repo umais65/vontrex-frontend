@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
 const AuthContext = createContext();
 
@@ -32,51 +33,29 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const res = await fetch('/api/users/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ email, password }),
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.message || 'Login failed');
-            }
+            const { data } = await axios.post('/api/users/login', { email, password });
 
             setUserInfo(data);
             return { success: true };
         } catch (error) {
-            return { success: false, error: error.message };
+            return { success: false, error: error.response?.data?.message || 'Login failed' };
         }
     };
 
     const register = async (name, email, password) => {
         try {
-            const res = await fetch('/api/users', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ name, email, password }),
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.message || 'Registration failed');
-            }
+            const { data } = await axios.post('/api/users', { name, email, password });
 
             setUserInfo(data);
             return { success: true };
         } catch (error) {
-            return { success: false, error: error.message };
+            return { success: false, error: error.response?.data?.message || 'Registration failed' };
         }
     };
 
     const logout = async () => {
         try {
-            await fetch('/api/users/logout', { method: 'POST', credentials: 'include' });
+            await axios.post('/api/users/logout');
         } catch (error) {
             console.error(error);
         }
