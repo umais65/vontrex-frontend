@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import HeroSection from '../components/HeroSection';
 import ProductCard from '../components/ProductCard';
 import CurrencySelector from '../components/CurrencySelector';
-import axios from 'axios';
 
 const HomePage = () => {
     const [featured, setFeatured] = useState([]);
@@ -12,7 +11,8 @@ const HomePage = () => {
         const fetchFeatured = async () => {
             try {
                 // Fetch featured products
-                const { data } = await axios.get('/api/products/featured');
+                const res = await fetch('/api/products/featured');
+                const data = await res.json();
                 setFeatured(data);
             } catch (err) {
                 console.error("Failed to fetch featured products", err);
@@ -102,23 +102,23 @@ const HomePage = () => {
                             </div>
                         </Link>
                         <Link to="/shop?category=wraps" className="category-block reveal visible">
-                            <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%231a1a1a%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%23e63946%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 font-size=%2248%22 font-weight=%22900%22 font-family=%22sans-serif%22%3EWRAPS%3C/text%3E%3C/svg%3E" alt="Hand Wraps" className="category-block__image" />
+                            <img src="/images/category-hand-wraps.jpg" alt="Hand Wraps" className="category-block__image" />
                             <div className="category-block__overlay">
                                 <h3 className="category-block__title">Hand Wraps</h3>
                                 <span className="category-block__cta">Shop Now &rarr;</span>
                             </div>
                         </Link>
                         <Link to="/shop?category=headgear" className="category-block reveal visible">
-                            <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%231a1a1a%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%23e63946%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 font-size=%2242%22 font-weight=%22900%22 font-family=%22sans-serif%22%3EHEADGEAR%3C/text%3E%3C/svg%3E" alt="Headgear" className="category-block__image" />
+                            <img src="/images/category-headgear.jpg" alt="Headgear" className="category-block__image" />
                             <div className="category-block__overlay">
                                 <h3 className="category-block__title">Headgear</h3>
                                 <span className="category-block__cta">Shop Now &rarr;</span>
                             </div>
                         </Link>
-                        <Link to="/shop?category=protection" className="category-block reveal visible">
-                            <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%231a1a1a%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%23e63946%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 font-size=%2236%22 font-weight=%22900%22 font-family=%22sans-serif%22%3EMOUTHGUARDS%3C/text%3E%3C/svg%3E" alt="Mouthguards" className="category-block__image" />
+                        <Link to="/shop?category=shinguards" className="category-block reveal visible">
+                            <img src="/images/category-shinguards.jpg" alt="Shinguards" className="category-block__image" />
                             <div className="category-block__overlay">
-                                <h3 className="category-block__title">Mouthguards</h3>
+                                <h3 className="category-block__title">Shinguards</h3>
                                 <span className="category-block__cta">Shop Now &rarr;</span>
                             </div>
                         </Link>
