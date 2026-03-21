@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://vontrex-backend-03201913ed4e.herokuapp.com/api/$1"
+      "destination": "https://vontrex-backend-03a967e8726a.herokuapp.com/api/$1"
     },
     {
       "source": "/(.*)",
