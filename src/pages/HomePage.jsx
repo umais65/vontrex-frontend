@@ -12,6 +12,7 @@ const HomePage = () => {
             try {
                 // Fetch featured products
                 const res = await fetch('/api/products/featured');
+                if (!res.ok) throw new Error('Network error');
                 const data = await res.json();
                 setFeatured(data);
             } catch (err) {
