@@ -3,6 +3,10 @@
     {
       "source": "/api/(.*)",
       "destination": "https://vontrex-backend-03a967e8726a.herokuapp.com/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
