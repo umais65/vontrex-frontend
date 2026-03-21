@@ -16,13 +16,6 @@ import { WishlistProvider } from './context/WishlistContext'
 // SECURITY FIX (VULN-H1): Ensure cookies are sent with every axios request
 axios.defaults.withCredentials = true;
 
-// DEPLOYMENT: Production mein Heroku backend URL use karo
-// import.meta.env.PROD — Vite automatically true karta hai production build mein
-// Dev mein: empty string (Vite proxy /api → localhost:5000 handle karta hai)
-axios.defaults.baseURL = import.meta.env.PROD
-  ? (import.meta.env.VITE_API_URL || 'https://vontrex-backend-03a967e8726a.herokuapp.com')
-  : '';
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
 
 const AdminRoute = () => {
     const { userInfo } = useAuth();
@@ -13,8 +12,9 @@ const AdminRoute = () => {
         // localStorage se isAdmin read karna unsafe hai — attacker manually set kar sakta hai
         const verifyAdmin = async () => {
             try {
-                const { data } = await axios.get('/api/users/profile');
-                setVerified(data.isAdmin === true);
+                const res = await fetch('/api/users/profile', { credentials: 'include' });
+                const data = await res.json();
+                setVerified(res.ok && data.isAdmin === true);
             } catch {
                 setVerified(false);
             }

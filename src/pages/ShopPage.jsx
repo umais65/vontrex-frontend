@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ProductCard from '../components/ProductCard';
 import CurrencySelector from '../components/CurrencySelector';
-import axios from 'axios';
 
 const ShopPage = () => {
     const [products, setProducts] = useState([]);
@@ -17,12 +16,16 @@ const ShopPage = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const { data } = await axios.get('/api/products');
+                const res = await fetch('/api/products');
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await res.json();
                 setProducts(data);
                 setFilteredProducts(data);
                 setLoading(false);
             } catch (err) {
-                setError(err.response?.data?.message || err.message);
+                setError(err.message);
                 setLoading(false);
             }
         };
