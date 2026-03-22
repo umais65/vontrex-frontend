@@ -22,11 +22,9 @@ const Testimonials = () => {
                         <div key={review.id} className="testimonial-card reveal visible" style={{ padding: '1.25rem' }}>
                             <i className="fas fa-quote-right testimonial-card__quote" style={{ fontSize: '1.25rem', top: '15px', right: '15px' }}></i>
                             <div className="testimonial-card__stars" style={{ marginBottom: '0.5rem', fontSize: '0.75rem' }}>
-                                <i className="fas fa-star"></i>
-                                <i className="fas fa-star"></i>
-                                <i className="fas fa-star"></i>
-                                <i className="fas fa-star"></i>
-                                <i className="fas fa-star"></i>
+                                {[...Array(5)].map((_, i) => (
+                                    <i key={i} className={`fa-star ${i < review.rating ? 'fas' : 'far'}`} style={{ color: i < review.rating ? '#FFD700' : '#444' }}></i>
+                                ))}
                             </div>
                             <p className="testimonial-card__text" style={{ fontSize: '0.85rem', lineHeight: '1.4', marginBottom: '1rem' }}>"{review.text}"</p>
                             <div className="testimonial-card__author" style={{ paddingTop: '0.75rem', gap: '0.5rem' }}>
