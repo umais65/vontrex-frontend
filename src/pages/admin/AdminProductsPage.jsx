@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { useCurrency } from '../../context/CurrencyContext';
 
@@ -19,11 +18,13 @@ const AdminProductsPage = () => {
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const { data } = await axios.get('/api/products');
+            const res = await fetch('/api/products');
+            if (!res.ok) throw new Error('Error fetching products');
+            const data = await res.json();
             setProducts(data);
             setLoading(false);
         } catch (err) {
-            setError(err.response && err.response.data.message ? err.response.data.message : err.message);
+            setError(err.message);
             setLoading(false);
         }
     };
@@ -31,36 +32,48 @@ const AdminProductsPage = () => {
     const deleteHandler = async (id) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
             try {
-                const config = {
-                    headers: {},
-                };
-                await axios.delete(`/api/products/${id}`, config);
+                const res = await fetch(`/api/products/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.message || 'Error deleting product');
+                }
                 fetchProducts();
             } catch (err) {
-                alert(err.response && err.response.data.message ? err.response.data.message : err.message);
+                alert(err.message);
             }
         }
     };
 
     const toggleFeaturedHandler = async (id) => {
         try {
-            const config = { headers: {} };
-            await axios.put(`/api/products/${id}/featured`, {}, config);
+            const res = await fetch(`/api/products/${id}/featured`, {
+                method: 'PUT',
+                credentials: 'include'
+            });
+            if (!res.ok) {
+                const error = await res.json();
+                throw new Error(error.message || 'Error toggling featured status');
+            }
             fetchProducts();
         } catch (err) {
-            alert(err.response && err.response.data.message ? err.response.data.message : err.message);
+            alert(err.message);
         }
     };
 
     const createProductHandler = async () => {
         try {
-            const config = {
-                headers: {},
-            };
-            const { data } = await axios.post('/api/products', {}, config);
+            const res = await fetch('/api/products', {
+                method: 'POST',
+                credentials: 'include'
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Error creating product');
             navigate(`/admin/product/${data._id}/edit`);
         } catch (err) {
-            alert(err.response && err.response.data.message ? err.response.data.message : err.message);
+            alert(err.message);
         }
     };
 

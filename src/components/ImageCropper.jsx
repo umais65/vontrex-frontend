@@ -54,10 +54,21 @@ const ImageCropper = ({ imgFile, onCropComplete, onCancel, aspect = 1 }) => {
 
         if (!ctx) return null;
 
-        // Set actual size in memory (scaled to account for extra pixel density)
-        canvas.width = completedCrop.width * scaleX;
-        canvas.height = completedCrop.height * scaleY;
+        let resultWidth = completedCrop.width * scaleX;
+        let resultHeight = completedCrop.height * scaleY;
 
+        // Cap the max dimension at 1500px for high quality web without hitting Vercel's 4.5MB limit
+        const MAX_DIMENSION = 1500;
+        if (resultWidth > MAX_DIMENSION || resultHeight > MAX_DIMENSION) {
+            const ratio = Math.min(MAX_DIMENSION / resultWidth, MAX_DIMENSION / resultHeight);
+            resultWidth *= ratio;
+            resultHeight *= ratio;
+        }
+
+        canvas.width = resultWidth;
+        canvas.height = resultHeight;
+
+        ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
 
         const cropX = completedCrop.x * scaleX;
@@ -92,7 +103,7 @@ const ImageCropper = ({ imgFile, onCropComplete, onCancel, aspect = 1 }) => {
                     resolve(croppedFile);
                 },
                 imgFile.type,
-                1 // highest quality for jpeg/png
+                0.9 // high quality web compression (was 1, which inflates file size massively)
             );
         });
     };

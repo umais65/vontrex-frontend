@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ProductCard from '../components/ProductCard';
 import CurrencySelector from '../components/CurrencySelector';
+import Meta from '../components/Meta';
 
 const ShopPage = () => {
     const [products, setProducts] = useState([]);
@@ -70,6 +71,7 @@ const ShopPage = () => {
 
     return (
         <main style={{ padding: '120px 5% 80px' }}>
+            <Meta title="Shop Vontrex | Premium Gloves, Headgear & Equipment" description="Browse our professional grade boxing equipment, spar gloves, headgears, and wraps at Vontrex Shop." />
             <div className="container" style={{ maxWidth: '1400px', margin: '0 auto' }}>
                 <div className="shop">
 

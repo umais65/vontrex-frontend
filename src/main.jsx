@@ -10,6 +10,8 @@ import './assets/css/pages.css'
 import './index.css'
 import App from './App.jsx'
 
+import { HelmetProvider } from 'react-helmet-async'
+
 import { CurrencyProvider } from './context/CurrencyContext'
 import { WishlistProvider } from './context/WishlistContext'
 
@@ -18,14 +20,16 @@ axios.defaults.withCredentials = true;
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AuthProvider>
-      <CurrencyProvider>
-        <WishlistProvider>
-          <CartProvider>
-            <App />
-          </CartProvider>
-        </WishlistProvider>
-      </CurrencyProvider>
-    </AuthProvider>
+    <HelmetProvider>
+      <AuthProvider>
+        <CurrencyProvider>
+          <WishlistProvider>
+            <CartProvider>
+              <App />
+            </CartProvider>
+          </WishlistProvider>
+        </CurrencyProvider>
+      </AuthProvider>
+    </HelmetProvider>
   </StrictMode>,
 )

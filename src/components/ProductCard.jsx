@@ -18,7 +18,7 @@ const ProductCard = ({ product }) => {
     };
 
     return (
-        <div className="product-card reveal visible" style={{ cursor: 'pointer' }} onClick={() => navigate(`/product/${product._id}`)}>
+        <div className="product-card reveal visible" style={{ cursor: 'pointer' }} onClick={() => navigate(`/product/${product.slug || product._id}`)}>
             <div className="product-card__image">
                 <img src={product.image} alt={product.name} />
                 {product.countInStock <= 0 && <span className="product-card__badge">Out of Stock</span>}
@@ -49,7 +49,7 @@ const ProductCard = ({ product }) => {
                 </div>
                 <h3 className="product-card__title">{product.name}</h3>
                 <p className="product-card__price">{formatPrice(product.price)}</p>
-                <Link to={`/product/${product._id}`} className="btn btn-outline btn-sm" onClick={(e) => e.stopPropagation()}>View Details</Link>
+                <Link to={`/product/${product.slug || product._id}`} className="btn btn-outline btn-sm" onClick={(e) => e.stopPropagation()}>View Details</Link>
             </div>
         </div>
     );

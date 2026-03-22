@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import HeroSection from '../components/HeroSection';
 import ProductCard from '../components/ProductCard';
 import CurrencySelector from '../components/CurrencySelector';
+import Meta from '../components/Meta';
 
 const HomePage = () => {
     const [featured, setFeatured] = useState([]);
@@ -34,6 +35,7 @@ const HomePage = () => {
 
     return (
         <main>
+            <Meta />
             <HeroSection />
 
             {/* FEATURED PRODUCTS */}

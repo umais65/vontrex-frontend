@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/react';
 import ScrollToTop from './components/ScrollToTop';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import WhatsAppWidget from './components/WhatsAppWidget';
 import HomePage from './pages/HomePage';
 import ShopPage from './pages/ShopPage';
 import ProductDetailsPage from './pages/ProductDetailsPage';
@@ -70,6 +71,7 @@ function App() {
           </Route>
         </Routes>
         <Footer />
+        <WhatsAppWidget />
       </div>
       <Analytics />
     </Router>

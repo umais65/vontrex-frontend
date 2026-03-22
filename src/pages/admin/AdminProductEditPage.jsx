@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import ImageCropper from '../../components/ImageCropper';
 
@@ -37,7 +36,9 @@ const AdminProductEditPage = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const { data } = await axios.get(`/api/products/${productId}`);
+                const res = await fetch(`/api/products/${productId}`);
+                if (!res.ok) throw new Error('Product not found');
+                const data = await res.json();
                 setName(data.name);
                 setPrice(data.price);
                 setImage(data.image);
@@ -74,14 +75,18 @@ const AdminProductEditPage = () => {
         setUploading(true);
 
         try {
-            const { data } = await axios.post('/api/upload', formData, {
-                withCredentials: true,
+            const res = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include'
             });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Image upload failed');
             setImage(data.image);
             setUploading(false);
         } catch (error) {
             console.error(error);
-            alert(error.response?.data?.message || 'Image upload failed! Only JPG/PNG allowed (max 5MB).');
+            alert(error.message || 'Image upload failed! Only JPG/PNG allowed (max 5MB).');
             setUploading(false);
         }
     };
@@ -113,14 +118,18 @@ const AdminProductEditPage = () => {
         setUploadingMultiple(true);
 
         try {
-            const { data } = await axios.post('/api/upload/multiple', formData, {
-                withCredentials: true,
+            const res = await fetch('/api/upload/multiple', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include'
             });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Upload failed');
             setImages(prev => [...prev, ...data.images]);
             setUploadingMultiple(false);
         } catch (error) {
             console.error(error);
-            alert(error.response?.data?.message || 'Upload failed! Only JPG/PNG allowed (max 5MB each).');
+            alert(error.message || 'Upload failed! Only JPG/PNG allowed (max 5MB each).');
             setUploadingMultiple(false);
         }
     };
@@ -162,14 +171,17 @@ const AdminProductEditPage = () => {
     const submitHandler = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(
-                `/api/products/${productId}`,
-                { name, price, image, images, category, countInStock, description, isFeatured },
-                { headers: {} }
-            );
+            const res = await fetch(`/api/products/${productId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ name, price, image, images, category, countInStock, description, isFeatured }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Update failed');
             navigate('/admin/productlist');
         } catch (err) {
-            setError(err.response ? err.response.data.message : err.message);
+            setError(err.message);
         }
     };
 

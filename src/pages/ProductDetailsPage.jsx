@@ -5,6 +5,7 @@ import { useCurrency } from '../context/CurrencyContext';
 import { useWishlist } from '../context/WishlistContext';
 import CurrencySelector from '../components/CurrencySelector';
 import ReactMarkdown from 'react-markdown';
+import Meta from '../components/Meta';
 
 const ProductDetailsPage = () => {
     const { id } = useParams();
@@ -198,6 +199,10 @@ const ProductDetailsPage = () => {
 
     return (
         <main style={{ padding: '120px 0 80px' }}>
+            <Meta 
+                title={`${product.name} | Vontrex Boxing`}
+                description={product.description ? `${product.description.substring(0, 150)}...` : 'Premium boxing and MMA gear by Vontrex'} 
+            />
             <div className="container">
                 <div className="product-detail">
                     {/* PRODUCT GALLERY */}
