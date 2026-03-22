@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import HeroSection from '../components/HeroSection';
 import ProductCard from '../components/ProductCard';
 import CurrencySelector from '../components/CurrencySelector';
+import Testimonials from '../components/Testimonials';
 import Meta from '../components/Meta';
 
 const HomePage = () => {
@@ -128,6 +129,9 @@ const HomePage = () => {
                     </div>
                 </div>
             </section>
+
+            {/* TESTIMONIALS */}
+            <Testimonials />
 
             {/* INSTAGRAM FEED */}
             <section className="section" style={{ background: 'var(--secondary-bg)' }}>
