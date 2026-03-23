@@ -19,7 +19,7 @@ const CheckoutPage = () => {
     const [postalCode, setPostalCode] = useState('');
     const [country, setCountry] = useState('');
     const [whatsapp, setWhatsapp] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('Credit Card');
+    const [paymentMethod, setPaymentMethod] = useState('Manual Bank Transfer');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const errorRef = useRef(null);
@@ -182,16 +182,34 @@ const CheckoutPage = () => {
                                 <h2 style={{ marginBottom: '1.5rem' }}>Payment Method</h2>
 
                                 <div className="form-group" style={{ marginBottom: '1rem' }}>
-                                    <input type="radio" id="credit" name="paymentMethod" value="Credit Card" checked={paymentMethod === 'Credit Card'} onChange={(e) => setPaymentMethod(e.target.value)} />
-                                    <label htmlFor="credit" style={{ marginLeft: '0.5rem' }}>Credit Card (Demo)</label>
+                                    <input type="radio" id="manual" name="paymentMethod" value="Manual Bank Transfer" checked={paymentMethod === 'Manual Bank Transfer'} onChange={(e) => setPaymentMethod(e.target.value)} />
+                                    <label htmlFor="manual" style={{ marginLeft: '0.5rem', fontWeight: 600 }}>Manual Bank Transfer (Payoneer / Wise)</label>
                                 </div>
                                 <div className="form-group">
-                                    <input type="radio" id="paypal" name="paymentMethod" value="PayPal" checked={paymentMethod === 'PayPal'} onChange={(e) => setPaymentMethod(e.target.value)} />
-                                    <label htmlFor="paypal" style={{ marginLeft: '0.5rem' }}>PayPal (Demo)</label>
+                                    <input type="radio" id="whatsapp" name="paymentMethod" value="WhatsApp Payment" checked={paymentMethod === 'WhatsApp Payment'} onChange={(e) => setPaymentMethod(e.target.value)} />
+                                    <label htmlFor="whatsapp" style={{ marginLeft: '0.5rem', fontWeight: 600 }}>Contact via WhatsApp to Pay</label>
                                 </div>
 
+                                {paymentMethod === 'Manual Bank Transfer' && (
+                                    <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '8px', borderLeft: '4px solid var(--accent-red)' }}>
+                                        <p style={{ fontWeight: 700, marginBottom: '0.5rem' }}>📋 Payment Instructions:</p>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                                            Please place your order first. After clicking "Complete Order", our team will contact you on your WhatsApp Number with the bank/transfer details. You can then share the payment screenshot to confirm your shipment.
+                                        </p>
+                                    </div>
+                                )}
+
+                                {paymentMethod === 'WhatsApp Payment' && (
+                                    <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(37, 211, 102, 0.1)', borderRadius: '8px', borderLeft: '4px solid #25D366' }}>
+                                        <p style={{ fontWeight: 700, marginBottom: '0.5rem', color: '#25D366' }}>💬 WhatsApp Checkout:</p>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                                            Select this if you want to finalize the payment and shipping costs directly with us over a call or chat. We will provide an invoice directly on your phone.
+                                        </p>
+                                    </div>
+                                )}
+
                                 <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '1.5rem' }}>
-                                    🔒 This is a secure demo checkout. No actual payment processing occurs.
+                                    ✅ Your order will be saved as "Pending" until the payment is confirmed.
                                 </p>
                             </div>
 
