@@ -13,8 +13,8 @@ const CheckoutPage = () => {
     const { userInfo } = useAuth();
     const { formatPrice, getRawConverted } = useCurrency();
 
-    // Required States
     const [address, setAddress] = useState('');
+    const [orderPlaced, setOrderPlaced] = useState(false);
     const [city, setCity] = useState('');
     const [postalCode, setPostalCode] = useState('');
     const [country, setCountry] = useState('');
@@ -33,10 +33,10 @@ const CheckoutPage = () => {
     useEffect(() => {
         if (!userInfo) {
             navigate('/login?redirect=checkout');
-        } else if (cartItems.length === 0) {
+        } else if (cartItems.length === 0 && !orderPlaced) {
             navigate('/cart');
         }
-    }, [userInfo, navigate, cartItems]);
+    }, [userInfo, navigate, cartItems, orderPlaced]);
 
     useEffect(() => {
         if (error && errorRef.current) {
@@ -55,6 +55,7 @@ const CheckoutPage = () => {
 
         try {
             setLoading(true);
+            setOrderPlaced(true);
             const config = {
                 headers: {
                     'Content-Type': 'application/json'
@@ -83,10 +84,6 @@ const CheckoutPage = () => {
 
             // Clean Cart
             clearCart();
-
-            if (data.emailPreviewUrl) {
-                alert(`✅ Order Placed Successfully!\n\nReceipt Link: ${data.emailPreviewUrl}\n\nClick OK to view your order details.`);
-            }
 
             // Redirect to Order Detail
             navigate(`/order/${data._id}`);

@@ -44,6 +44,19 @@ const OrderDetailsPage = () => {
                     <Link to="/shop" className="btn btn-outline">Keep Shopping</Link>
                 </div>
 
+                {!order.isPaid && (
+                    <div className="reveal visible" style={{ background: 'rgba(37, 211, 102, 0.1)', border: '1px solid #25D366', padding: '1.5rem', borderRadius: '12px', marginBottom: '2.5rem' }}>
+                        <h2 style={{ color: '#25D366', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <i className="fas fa-check-circle"></i> Order Received Successfully!
+                        </h2>
+                        <p style={{ fontSize: '1.1rem', color: 'var(--text-primary)', lineHeight: '1.6' }}>
+                            Hi <strong>{order.user.name}</strong>, thank you for choosing Vontrex! 
+                            <br /><br />
+                            Your order has been saved securely. Our team will contact you shortly on your provided WhatsApp number (<strong>{order.shippingAddress.whatsapp}</strong>) to finalize the payment and dispatch your gear.
+                        </p>
+                    </div>
+                )}
+
                 <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '3rem' }}>
 
                     {/* ORDER DETAILS LEFT */}
