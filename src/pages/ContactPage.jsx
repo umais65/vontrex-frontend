@@ -31,8 +31,8 @@ const ContactPage = () => {
                         <div className="info-block">
                             <i className="fas fa-map-marker-alt"></i>
                             <div>
-                                <h3>Headquarters</h3>
-                                <p>123 Boxing Avenue, Fight City, NY 10001</p>
+                                <h3>Office</h3>
+                                <p>52250 Hafizabad road, Grw, Pakistan</p>
                             </div>
                         </div>
                         <div className="info-block">
@@ -47,8 +47,7 @@ const ContactPage = () => {
                             <i className="fas fa-phone-alt"></i>
                             <div>
                                 <h3>Phone / WhatsApp</h3>
-                                <p>+1 (555) 123-4567</p>
-                                <p>Mon - Fri, 9am - 5pm EST</p>
+                                <p>03368884744</p>
                             </div>
                         </div>
                     </div>
