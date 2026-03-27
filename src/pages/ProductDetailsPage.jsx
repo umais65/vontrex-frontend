@@ -189,10 +189,7 @@ const ProductDetailsPage = () => {
         }
     };
 
-    // Calculate stars
-    const rating = product.rating || 5.0;
-    const fullStars = Math.floor(rating);
-    const stars = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
+
 
     // Get images array to display
     const imagesToDisplay = [product.image, ...(product.images || []).filter(img => img !== product.image)];
@@ -244,10 +241,7 @@ const ProductDetailsPage = () => {
 
                         <h1 className="product-info__title">{product.name}</h1>
 
-                        <div className="product-info__rating">
-                            <span style={{ color: '#ffc107', fontSize: '1.25rem' }}>{stars}</span>
-                            <span style={{ color: 'var(--text-secondary)' }}>{rating} ({product.reviews || 0} reviews)</span>
-
+                        <div style={{ marginBottom: '1rem' }}>
                             {product.countInStock === 0 ? (
                                 <span className="badge badge--danger">Out of Stock</span>
                             ) : product.countInStock < 10 ? (
@@ -395,47 +389,7 @@ const ProductDetailsPage = () => {
                                 </div>
                             </div>
 
-                            {/* REVIEWS ACCORDION */}
-                            <div className={`accordion__item ${accordionOpen === 'Reviews' ? 'accordion__item--active' : ''}`}>
-                                <button className="accordion__header" onClick={() => toggleAccordion('Reviews')}>
-                                    Reviews
-                                    <span className="accordion__icon">▼</span>
-                                </button>
-                                <div className="accordion__content">
-                                    <div className="accordion__body">
-                                        <div style={{ marginBottom: '1.5rem' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                                    <span style={{ fontSize: '3rem', fontWeight: 900 }}>{rating}</span>
-                                                    <div>
-                                                        <div style={{ color: '#ffc107', fontSize: '1.25rem' }}>{stars}</div>
-                                                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Based on {product.reviews || 0} reviews</p>
-                                                    </div>
-                                                </div>
-                                                <button className="btn-secondary btn-sm">Write a Review</button>
-                                            </div>
-                                        </div>
-                                        <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
-                                            <div style={{ marginBottom: '1.5rem' }}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                                    <strong>Best gloves I've owned</strong>
-                                                    <span style={{ color: '#ffc107' }}>★★★★★</span>
-                                                </div>
-                                                <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Amazing quality and protection. Perfect for heavy bag work.</p>
-                                                <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>- Mike T., Verified Buyer</p>
-                                            </div>
-                                            <div style={{ marginBottom: '1.5rem' }}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                                    <strong>Professional grade</strong>
-                                                    <span style={{ color: '#ffc107' }}>★★★★★</span>
-                                                </div>
-                                                <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Used these for 6 months of intense training. Still look brand new.</p>
-                                                <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>- Sarah L., Verified Buyer</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
 
                             {/* FAQ ACCORDION */}
                             <div className={`accordion__item ${accordionOpen === 'FAQ' ? 'accordion__item--active' : ''}`}>
